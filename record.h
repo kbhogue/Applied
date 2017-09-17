@@ -5,7 +5,7 @@
 #include <QDate>
 #include <QFile>
 #include <QTextStream>
-
+#include <iostream>
 
 class Record
 {

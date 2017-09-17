@@ -56,60 +56,94 @@ void Database::addPerson(Record personIn)
     {
         m_db.append(personIn);
     }
+
 }
 
 //deletes a person from the database
 //checks for name and deletes person of same name
 //inputs: person to be deleted
-void Database::deleteByName(QString nameIn)
+void Database::deleteByName(QString nameIn, bool &f)
 {
-    for(int i = 0; i<m_db.length(); i++)
-    {
-        if (QString::compare(nameIn,m_db[i].getName())==0)
+    try{
+        bool found = false;
+        for(int i = 0; i<m_db.length(); i++)
         {
-            m_db.removeAt(i);
-            break;
+            if (QString::compare(nameIn,m_db[i].getName())==0)
+            {
+                m_db.removeAt(i);
+                found = true;
+            }
         }
+        if(!found)
+        {
+            f = true;
+            throw "Invalid Argument(Name not found)";
+        }
+
+    }
+    catch(const char* exc)
+    {
+        std::cerr << exc << endl;
     }
 }
 
 //deletes a person from the database
 //checks for birthday and deletes person with same birthday
 //inputs: date to be deleted
-void Database::deleteByDate(QDate dateIn)
+void Database::deleteByDate(QDate dateIn, bool &f)
 {
-    for(int i = 0; i<m_db.length(); i++)
-    {
-        QDate dateCur = m_db[i].getDate();
-        if (dateIn == dateCur)
+    try{
+        bool found = false;
+        for(int i = 0; i<m_db.length(); i++)
         {
-            m_db.removeAt(i);
+            QDate dateCur = m_db[i].getDate();
+            if (dateIn == dateCur)
+            {
+                m_db.removeAt(i);
+                found = true;
+            }
+        }
+        if(!found)
+        {
+            f = true;
+            throw "Invalid Argument(Date not found)";
         }
     }
+    catch(const char* exc){
+        std::cerr <<exc <<endl;
+    }
+
 }
 
 //Takes in a name and finds the birthday associated with the name
 //Inputs: QString name
 //Outputs: QDate birthday
-QDate Database::findBday(QString nameIn)
+QDate Database::findBday(QString nameIn, bool &f)
 {
-    QTextStream out(stdout);
-    QString nameCur;
-    nameIn = nameIn.remove('\r');
-    nameIn = nameIn.remove('\n');
-    out << nameIn << endl;
-    for(int i = 0; i<m_db.length(); i++)
-    {
-        nameCur = m_db[i].getName();
-        out << nameCur;
-        if(QString::compare(nameCur, nameIn)==0)
-            return m_db[i].getDate();
+    try{
+        QTextStream out(stdout);
+        QString nameCur;
+        nameIn = nameIn.remove('\r');
+        nameIn = nameIn.remove('\n');
+        for(int i = 0; i<m_db.length(); i++)
+        {
+            nameCur = m_db[i].getName();
+            if(QString::compare(nameCur, nameIn)==0)
+                return m_db[i].getDate();
+         }
+        f = true;
+       throw "Invalid Argument(Name not found)";
     }
-   throw "invalid argument(Name not found)";
+    catch(const char* exc){
+        std::cerr << exc << endl;
+    }
+
 }
 
-QDate Database::namespec(QString substr)
+QDate Database::namespec(QString substr, bool &f)
 {
+    try{
+    bool found = false;
     QTextStream out(stdout);
     out << "Name            Birthday" << endl;
     out << "===========     ===========" << endl;
@@ -120,30 +154,20 @@ QDate Database::namespec(QString substr)
         if(m_db[i].getName().contains(substr))
         {
            out << m_db[i].getName()<< "\t" << m_db[i].getDate().QDate::toString() << endl;
+           found = true;
         }
     }
+    if (!found)
+    {
+        f = true;
+        throw "Invalid Argument(Substring not found)";
+    }
+    }
+    catch(const char* exc)
+    {
+        std::cerr << exc << endl;
+    }
 }
-
-/*
-//Sorts the database by name alphabetically
-bool compareName(Record &person1, Record &person2)
-{
-    int c = QString::compare(person1.getName(),person2.getName());
-    if (c == 1)
-        return true;
-    else
-        return false;
-}
-
-//sorts the database by birthday chronologically
-bool compareDate(Record &person1, Record &person2))
-{
-    int c = QString::compare(person1.getDate().toString(),person2.getDate().toString());
-    if (c == 1)
-        return true;
-    else
-        return false;
-} */
 
 //lists the next birthdays occuring in range
 void Database::nextBdays(QDate date,int range)

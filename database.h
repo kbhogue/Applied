@@ -9,12 +9,12 @@ public:
     void openFile(QString fileIn);
     void writeFile(QString fileIn);
     void addPerson(Record personIn);
-    void deleteByName(QString nameIn);
-    void deleteByDate(QDate dateIn);
-    QDate findBday(QString nameIn);
+    void deleteByName(QString nameIn, bool &f);
+    void deleteByDate(QDate dateIn, bool &f);
+    QDate findBday(QString nameIn, bool &f);
     //QDate findBday(QDate d1, QDate d2);
     void nextBdays(QDate date, int range);
-    QDate namespec(QString substr);
+    QDate namespec(QString substr, bool &f);
     QString getName(int i);
     QDate getDate(int i);
 
