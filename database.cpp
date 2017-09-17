@@ -49,13 +49,17 @@ void Database::writeFile(QString fileIn)
 //inputs: person to be added
 void Database::addPerson(Record personIn)
 {
+    bool found = false;
     int i;
     for(i = 0; i<m_db.length(); i++)
     {
-        if (m_db[i].getName() == personIn.getName())
-            m_db[i].getDate() = personIn.getDate();
+        if (QString::compare(m_db[i].getName(),personIn.getName())==0)
+        {
+            m_db[i].setDate(personIn.getDate());
+            found = true;
+        }
     }
-    if(i==m_db.length())
+    if(!found)
     {
         m_db.append(personIn);
     }
