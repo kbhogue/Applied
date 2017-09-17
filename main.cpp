@@ -1,3 +1,6 @@
+//Katherine Hogue
+//Applied HW1
+
 #include <QCoreApplication>
 #include "database.h"
 #include "record.h"
@@ -28,27 +31,28 @@ int main(int argc, char *argv[])
     if (argc == 2)
     {
         QString substr = argv[i];
-        //try
-        {
-            data.namespec(substr, fail);
-        }
+
+        data.namespec(substr, fail);
+
+        if(fail)                        //check if code failed
+            return EXIT_FAILURE;
     }
     //Case to add or set birthday
     else if(QString::compare("-a",argv[i])==0)
     {
         try{
-        i++;
-        QString dateIn = argv[i];
-        QDate date = QDate::fromString(dateIn, "yyyy-MM-dd");
-        if (!date.QDate::isValid())
-            throw "Invalid Argument(Invalid date)";
-        i++;
-        QString name = argv[i];
-        Record humanIn(name,date);
+            i++;
+            QString dateIn = argv[i];
+            QDate date = QDate::fromString(dateIn, "yyyy-MM-dd");
+            if (!date.QDate::isValid())
+                throw "Invalid Argument(Invalid date)";
+            i++;
+            QString name = argv[i];
+            Record humanIn(name,date);
 
-        data.addPerson(humanIn);
+            data.addPerson(humanIn);
 
-        data.writeFile("birthdays.dat");
+            data.writeFile("birthdays.dat");
         }
         catch(const char* exc)
         {
@@ -72,16 +76,32 @@ int main(int argc, char *argv[])
         QString test = argv[i];
         if (test[0].isDigit())
         {
-            QDate dateIn = QDate::fromString(test, "yyyy-MM-dd");
-            data.deleteByDate(dateIn, fail);
+            try{
+                QDate dateIn = QDate::fromString(test, "yyyy-MM-dd");
+                data.deleteByDate(dateIn, fail);
+                if(!dateIn.QDate::isValid())
+                {
+                    fail = true;
+                    throw "Invalid Arguments(Date not Valid)";
+                }
+            }
+            catch(const char* exc)
+            {
+                std::cerr << exc <<endl;
+            }
+
+            if(fail)                        //check if code failed
+                return EXIT_FAILURE;
         }
         else
         {
             QString nameIn = argv[i];
             data.deleteByName(nameIn, fail);
+            if(fail)                        //check if code failed
+                return EXIT_FAILURE;
         }
 
-       data.writeFile("birthdays.dat");
+        data.writeFile("birthdays.dat");
 
     }
     //Case printing birthdays coming up in next xx days of name's bday
@@ -92,6 +112,9 @@ int main(int argc, char *argv[])
         QString name = argv[i];
         QDate dayIn = data.findBday(name, fail);
 
+        if(fail)                        //check if code failed
+            return EXIT_FAILURE;
+
         i++;
         int range = atoi(argv[i]);
         data.nextBdays(dayIn, range);
@@ -101,14 +124,26 @@ int main(int argc, char *argv[])
     //chronilogical
     else if (QString::compare("-r", argv[i])==0)
     {
-       i++;
-       QDate day1 = QDate::fromString(argv[i],"yyyy-MM-dd");
-       i++;
-       QDate day2 = QDate::fromString(argv[i],"yyyy-MM-dd");
+        try{
+        i++;
+        QDate day1 = QDate::fromString(argv[i],"yyyy-MM-dd");
+        if(!day1.QDate::isValid()){
+            throw "Invalid Input(Invalid Date)";
+        }
+        i++;
+        QDate day2 = QDate::fromString(argv[i],"yyyy-MM-dd");
+        if(!day2.QDate::isValid()){
+            throw "Invalid Input(Invalid Date)";
+        }
+        int range = day1.daysTo(day2);
 
-       int range = day1.daysTo(day2);
-
-       data.nextBdays(day1, range);
+        data.nextBdays(day1, range);
+        }
+        catch(const char* exc)
+        {
+            std::cerr << exc << endl;
+            return EXIT_FAILURE;
+        }
     }
     //Case printing birthdays between name1 and name2's bday
     //alphabetical
@@ -117,6 +152,10 @@ int main(int argc, char *argv[])
         i++;
         QString name = argv[i];
         QDate day1 = data.findBday(name, fail);
+
+        if(fail)                        //check if code failed
+            return EXIT_FAILURE;
+
         i++;
         name = argv[i];
         QDate day2 = data.findBday(name,fail);
@@ -129,10 +168,6 @@ int main(int argc, char *argv[])
         data.nextBdays(day1, range);
     }
 
-    //catch(const std::invalid_argument& ia)
-    //{
-    //    out << "invalid argument" << endl;
-    //}
 
     return 0;
 }

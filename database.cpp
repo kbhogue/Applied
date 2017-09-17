@@ -1,3 +1,6 @@
+//Katherine Hogue
+//Applied HW1
+
 #include "database.h"
 
 //Default constructor
@@ -145,6 +148,7 @@ QDate Database::namespec(QString substr, bool &f)
     try{
     bool found = false;
     QTextStream out(stdout);
+
     out << "Name            Birthday" << endl;
     out << "===========     ===========" << endl;
 

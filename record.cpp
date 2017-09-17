@@ -1,4 +1,5 @@
-//Katherine Hogue, 9/7/17 In Class Assignment
+//Katherine Hogue
+//Applied HW1
 
 #include "record.h"
 

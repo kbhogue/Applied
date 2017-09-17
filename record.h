@@ -1,4 +1,6 @@
-//Katherine Hogue, 9/7/17 In Class Assignment
+//Katherine Hogue
+//Applied HW1
+
 #ifndef RECORD_H
 #define RECORD_H
 #include <QString>
